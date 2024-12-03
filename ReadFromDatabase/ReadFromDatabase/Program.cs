@@ -1,9 +1,13 @@
-﻿namespace ReadFromDatabase;
+﻿using ReadFromDatabase.Data;
+
+namespace ReadFromDatabase;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        TicketManagementDatabaseContext context = new TicketManagementDatabaseContext();
+        
+        context.CheckConnection();
     }
 }
