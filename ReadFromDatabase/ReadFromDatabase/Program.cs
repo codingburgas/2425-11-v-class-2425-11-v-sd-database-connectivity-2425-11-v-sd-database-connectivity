@@ -8,6 +8,6 @@ class Program
     {
         TicketManagementDatabaseContext context = new TicketManagementDatabaseContext();
         
-        context.CheckConnection();
+        context.ReadPlanes();
     }
 }

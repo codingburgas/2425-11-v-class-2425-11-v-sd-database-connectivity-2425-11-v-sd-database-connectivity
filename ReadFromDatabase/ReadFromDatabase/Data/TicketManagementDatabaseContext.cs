@@ -11,7 +11,6 @@ public class TicketManagementDatabaseContext
     public List<Ticket> Tickets { get; set; }
     public List<Customer> Customers { get; set; }
     public List<Plane> Planes { get; set; }
-
     public TicketManagementDatabaseContext()
     {
         // TODO: Hide connection string in an environment variable
@@ -21,49 +20,76 @@ public class TicketManagementDatabaseContext
         {
             _connection = new SqlConnection(connectionString);
             
+            Tickets = new List<Ticket>();
+            Customers = new List<Customer>();
+            Planes = new List<Plane>();
+            
+            ReadPlanes();
+            ReadCustomers();
+            ReadTickets();
         }
         
         _connection.Open();
     }
 
-    public void PullDataFromDatabase()
+    public void ReadPlanes()
     {
-        SqlCommand command = new SqlCommand("SELECT * FROM Planes", _connection);
+        SqlCommand command = new SqlCommand("SELECT * FROM [Planes]", _connection);
 
         SqlDataReader reader = command.ExecuteReader();
 
-        foreach (string row in reader)
+        while (reader.Read())
         {
-            string[] splitString = row.Split(',');
-            
             Planes.Add(new Plane()
-                {
-                    // TODO: Unhandled exception. System.InvalidCastException: Unable to cast object of type 'System.Data.Common.DataRecordInternal' to type 'System.String'.
-                    Id = int.Parse(splitString[0]),
-                    Name = splitString[1],
-                    Make = splitString[2],
-                    Model = splitString[3],
-                }
-            );
-        }
-
-        foreach (Plane plane in Planes)
-        {
-            Console.WriteLine($"{plane.Id} - {plane.Name} - {plane.Make} - {plane.Model}");
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                Name = Convert.ToString(reader["Name"]),
+                Make = Convert.ToString(reader["Make"]),
+                Model = Convert.ToString(reader["Model"]),
+            });
         }
     }
-
-    public void CheckConnection()
+    
+    public void ReadCustomers()
     {
-        if (_connection.State == ConnectionState.Open)
+        SqlCommand command = new SqlCommand("SELECT * FROM [Customers]", _connection);
+
+        SqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
         {
-            Console.WriteLine("Connection established");
-            
-            PullDataFromDatabase();
+            Customers.Add(new Customer()
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                Age = Convert.ToInt32(reader["Age"]),
+                Country = Convert.ToString(reader["Country"]),
+                FirstName = Convert.ToString(reader["FirstName"]),
+                LastName = Convert.ToString(reader["LastName"]),
+            });
         }
-        else
+    }
+    
+    public void ReadTickets()
+    {
+        SqlCommand command = new SqlCommand("SELECT * FROM [Tickets]", _connection);
+
+        SqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
         {
-            Console.WriteLine("Connection not established");
+            Tickets.Add(new Ticket()
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                From = Convert.ToString(reader["From"]),
+                To = Convert.ToString(reader["To"]),
+                DepartureTime = Convert.ToDateTime(reader["DepartureTime"]),
+                ArrivalTime = Convert.ToDateTime(reader["ArrivalTime"]),
+                SeatNumber = Convert.ToString(reader["SeatNumber"]),
+                
+                PlaneId = Planes.Where(x=> x.Id == Convert.ToInt32(reader["PlaneId"])).FirstOrDefault(),
+                
+                CustomerId = Customers.Where(x => x.Id == Convert.ToInt32(reader["CustomerId"])).FirstOrDefault(),
+            });
         }
     }
 }
