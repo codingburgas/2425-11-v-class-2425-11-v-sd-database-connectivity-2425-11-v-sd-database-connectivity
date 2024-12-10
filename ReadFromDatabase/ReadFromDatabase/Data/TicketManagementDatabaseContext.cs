@@ -24,12 +24,12 @@ public class TicketManagementDatabaseContext
             Customers = new List<Customer>();
             Planes = new List<Plane>();
             
+            _connection.Open();
+            
             ReadPlanes();
             ReadCustomers();
             ReadTickets();
         }
-        
-        _connection.Open();
     }
 
     public void ReadPlanes()
@@ -48,6 +48,8 @@ public class TicketManagementDatabaseContext
                 Model = Convert.ToString(reader["Model"]),
             });
         }
+        
+        reader.Close();
     }
     
     public void ReadCustomers()
@@ -67,6 +69,8 @@ public class TicketManagementDatabaseContext
                 LastName = Convert.ToString(reader["LastName"]),
             });
         }
+        
+        reader.Close();
     }
     
     public void ReadTickets()
@@ -91,5 +95,7 @@ public class TicketManagementDatabaseContext
                 CustomerId = Customers.Where(x => x.Id == Convert.ToInt32(reader["CustomerId"])).FirstOrDefault(),
             });
         }
+        
+        reader.Close();
     }
 }
