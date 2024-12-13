@@ -8,7 +8,5 @@ class Program
     static void Main(string[] args)
     {
         TicketManagementDatabaseContext context = new TicketManagementDatabaseContext();
-
-        
     }
 }

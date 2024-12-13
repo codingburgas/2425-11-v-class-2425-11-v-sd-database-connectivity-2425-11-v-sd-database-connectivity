@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using ReadFromDatabase.Models;
 
@@ -7,7 +8,6 @@ namespace ReadFromDatabase.Data;
 public class TicketManagementDatabaseContext
 {
     private SqlConnection _connection = null;
-    
     public List<Ticket> Tickets { get; set; }
     public List<Customer> Customers { get; set; }
     public List<Plane> Planes { get; set; }
