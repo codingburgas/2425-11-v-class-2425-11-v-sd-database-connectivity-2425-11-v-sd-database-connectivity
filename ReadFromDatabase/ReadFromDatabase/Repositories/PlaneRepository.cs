@@ -13,9 +13,11 @@ public class PlaneRepository : TicketManagementDatabaseContext
     {
         _context.Planes.Add(newPlane);
 
-        SqlCommand command = new SqlCommand($"INSERT INTO [Planes] VALUES {newPlane.Id},{newPlane.Name},{newPlane.Make},{newPlane.Model}");
+        SqlCommand command = new SqlCommand($"INSERT INTO [Planes](Id,[Name],Make,Model) VALUES ({newPlane.Id},\'{newPlane.Name}\',\'{newPlane.Make}\',\'{newPlane.Model}\')", _context.Connection);
         
-        SqlDataAdapter adapter = new SqlDataAdapter(command);
+        SqlDataAdapter adapter = new SqlDataAdapter();
+        
+        adapter.InsertCommand = command;
         
         adapter.InsertCommand.ExecuteNonQuery();
     }

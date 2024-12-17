@@ -7,7 +7,7 @@ namespace ReadFromDatabase.Data;
 
 public class TicketManagementDatabaseContext
 {
-    private SqlConnection _connection = null;
+    public SqlConnection Connection { get; } = null;
     public List<Ticket> Tickets { get; set; }
     public List<Customer> Customers { get; set; }
     public List<Plane> Planes { get; set; }
@@ -16,15 +16,15 @@ public class TicketManagementDatabaseContext
         // TODO: Hide connection string in an environment variable
         string connectionString = "Server=localhost\\SQLEXPRESS;Database=TicketManagementDatabase;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;";
 
-        if (_connection == null)
+        if (Connection == null)
         {
-            _connection = new SqlConnection(connectionString);
+            Connection = new SqlConnection(connectionString);
             
             Tickets = new List<Ticket>();
             Customers = new List<Customer>();
             Planes = new List<Plane>();
             
-            _connection.Open();
+            Connection.Open();
             
             ReadPlanes();
             ReadCustomers();
@@ -34,7 +34,7 @@ public class TicketManagementDatabaseContext
 
     public void ReadPlanes()
     {
-        SqlCommand command = new SqlCommand("SELECT * FROM [Planes]", _connection);
+        SqlCommand command = new SqlCommand("SELECT * FROM [Planes]", Connection);
 
         SqlDataReader reader = command.ExecuteReader();
 
@@ -54,7 +54,7 @@ public class TicketManagementDatabaseContext
     
     public void ReadCustomers()
     {
-        SqlCommand command = new SqlCommand("SELECT * FROM [Customers]", _connection);
+        SqlCommand command = new SqlCommand("SELECT * FROM [Customers]", Connection);
 
         SqlDataReader reader = command.ExecuteReader();
 
@@ -75,7 +75,7 @@ public class TicketManagementDatabaseContext
     
     public void ReadTickets()
     {
-        SqlCommand command = new SqlCommand("SELECT * FROM [Tickets]", _connection);
+        SqlCommand command = new SqlCommand("SELECT * FROM [Tickets]", Connection);
 
         SqlDataReader reader = command.ExecuteReader();
 
